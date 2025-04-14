@@ -1,0 +1,94 @@
+:root {
+  /* Base colors */
+  --primary-color: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #dbeafe;
+  --success-color: #10b981;
+  --success-light: #d1fae5;
+  --warning-color: #f59e0b;
+  --warning-light: #fef3c7;
+  --danger-color: #ef4444;
+  --danger-light: #fee2e2;
+  --info-color: #3b82f6;
+  --info-light: #dbeafe;
+  --purple-color: #8b5cf6;
+  --purple-light: #ede9fe;
+
+  /* Light theme */
+  --background-color: #f9fafb;
+  --text-color: #111827;
+  --text-muted: #6b7280;
+  --border-color: #e5e7eb;
+  --card-bg: #ffffff;
+  --item-bg: #f3f4f6;
+  --hover-color: #f3f4f6;
+  --active-nav-bg: #f3f4f6;
+  --input-bg: #ffffff;
+  --disabled-bg: #e5e7eb;
+  --unread-bg: #f0f9ff;
+
+  /* Header & Footer */
+  --header-bg: #ffffff;
+  --footer-bg: #1f2937;
+  --footer-text: #f9fafb;
+  --footer-social-bg: #374151;
+  --footer-social-text: #f9fafb;
+
+  /* Sidebar */
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #111827;
+  --icon-bg: #f3f4f6;
+
+  /* Hero section */
+  --hero-bg-start: #f0f9ff;
+  --hero-bg-end: #e0f2fe;
+  --hero-text: #111827;
+  --hero-text-secondary: #4b5563;
+
+  /* Auth pages */
+  --auth-bg-start: #f0f9ff;
+  --auth-bg-end: #e0f2fe;
+
+  /* Section backgrounds */
+  --section-alt-bg: #f3f4f6;
+}
+
+[data-theme="dark"] {
+  /* Dark theme */
+  --background-color: #111827;
+  --text-color: #f9fafb;
+  --text-muted: #9ca3af;
+  --border-color: #374151;
+  --card-bg: #1f2937;
+  --item-bg: #1f2937;
+  --hover-color: #374151;
+  --active-nav-bg: #2d3748;
+  --input-bg: #1f2937;
+  --disabled-bg: #4b5563;
+  --unread-bg: #172554;
+
+  /* Header & Footer */
+  --header-bg: #1f2937;
+  --footer-bg: #111827;
+  --footer-text: #f9fafb;
+  --footer-social-bg: #374151;
+  --footer-social-text: #f9fafb;
+
+  /* Sidebar */
+  --sidebar-bg: #1f2937;
+  --sidebar-text: #f9fafb;
+  --icon-bg: #374151;
+
+  /* Hero section */
+  --hero-bg-start: #111827;
+  --hero-bg-end: #1f2937;
+  --hero-text: #f9fafb;
+  --hero-text-secondary: #d1d5db;
+
+  /* Auth pages */
+  --auth-bg-start: #111827;
+  --auth-bg-end: #1f2937;
+
+  /* Section backgrounds */
+  --section-alt-bg: #1f2937;
+}
