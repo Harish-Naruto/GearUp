@@ -5,6 +5,8 @@ import { AuthProvider } from "./contexts/AuthContext"
 import { ThemeProvider } from "./contexts/ThemeContext"
 import ProtectedRoute from "./components/common/ProtectedRoute"
 import RoleBasedRoute from "./components/common/RoleBasedRoute"
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 // Layouts
 import MainLayout from "./layouts/MainLayout"
@@ -16,7 +18,7 @@ import LoginPage from "./pages/auth/LoginPage"
 import RegisterPage from "./pages/auth/RegisterPage"
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
 import GarageListPage from "./pages/garages/GarageListPage"
-import GarageDetailPage from "./pages/garages/GarageDetailPage"
+import GarageDetailPage from "./pages/garages/GrageDetailPage"
 import AboutPage from "./pages/AboutPage"
 import ContactPage from "./pages/ContactPage"
 
@@ -27,9 +29,9 @@ import BookingDetailPage from "./pages/bookings/BookingDetailPage"
 import CreateBookingPage from "./pages/bookings/CreateBookingPage"
 import UserProfilePage from "./pages/profile/UserProfilePage"
 import NotificationsPage from "./pages/notifications/NotificationsPage"
-import VehicleListPage from "./pages/vehicles/VehicleListPage"
-import VehicleDetailPage from "./pages/vehicles/VehicleDetailPage"
-import AddVehiclePage from "./pages/vehicles/AddVehiclePage"
+import VehicleListPage from "./pages/vehicles/VehicleListPage" 
+import VehicleDetailPage from "./pages/vehicles/VehicleDetailPage" 
+import AddVehiclePage from "./pages/vehicles/AddVehiclePage" 
 
 // Manager Pages
 import ManagerDashboardPage from "./pages/dashboard/ManagerDashboardPage"
@@ -44,12 +46,12 @@ import WorkerDashboardPage from "./pages/dashboard/WorkerDashboardPage"
 import AssignmentsPage from "./pages/worker/AssignmentsPage"
 import AvailabilityPage from "./pages/worker/AvailabilityPage"
 
-// Admin Pages
-import AdminDashboardPage from "./pages/dashboard/AdminDashboardPage"
-import UserManagementPage from "./pages/admin/UserManagementPage"
-import GarageAdminPage from "./pages/admin/GarageAdminPage"
-import SystemSettingsPage from "./pages/admin/SystemSettingsPage"
-import SystemReportsPage from "./pages/admin/SystemReportsPage"
+// // Admin Pages
+// import AdminDashboardPage from "./pages/dashboard/AdminDashboardPage"
+// import UserManagementPage from "./pages/admin/UserManagementPage"
+// import GarageAdminPage from "./pages/admin/GarageAdminPage"
+// import SystemSettingsPage from "./pages/admin/SystemSettingsPage"
+// import SystemReportsPage from "./pages/admin/SystemReportsPage"
 
 // Error Pages
 import NotFoundPage from "./pages/errors/NotFoundPage"
@@ -110,14 +112,14 @@ function App() {
                   </RoleBasedRoute>
                 }
               />
-              <Route
+              {/* <Route
                 path="admin"
                 element={
                   <RoleBasedRoute roles={["ADMIN"]}>
                     <AdminDashboardPage />
                   </RoleBasedRoute>
                 }
-              />
+              /> */}
             </Route>
 
             {/* Bookings Routes */}
@@ -205,7 +207,7 @@ function App() {
             </Route>
 
             {/* Admin Routes */}
-            <Route
+            {/* <Route
               path="/admin"
               element={
                 <ProtectedRoute>
@@ -219,7 +221,7 @@ function App() {
               <Route path="garages" element={<GarageAdminPage />} />
               <Route path="settings" element={<SystemSettingsPage />} />
               <Route path="reports" element={<SystemReportsPage />} />
-            </Route>
+            </Route> */}
 
             {/* 404 Route */}
             <Route path="*" element={<NotFoundPage />} />

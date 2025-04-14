@@ -15,7 +15,7 @@ import {
   FaCog,
   FaClipboardList,
   FaWarehouse,
-  FaUserHardHat,
+  FaHardHat,
   FaUserTie,
   FaUserShield,
   FaCarAlt,
@@ -47,7 +47,7 @@ const Sidebar = ({ isOpen, userRole }) => {
           { path: "/dashboard/manager", icon: <FaHome />, label: "Dashboard" },
           { path: "/manager/garage", icon: <FaWarehouse />, label: "My Garage" },
           { path: "/manager/services", icon: <FaTools />, label: "Services" },
-          { path: "/manager/workers", icon: <FaUserHardHat />, label: "Workers" },
+          { path: "/manager/workers", icon: <FaHardHat />, label: "Workers" },
           { path: "/manager/bookings", icon: <FaCalendarAlt />, label: "Bookings" },
           { path: "/manager/reports", icon: <FaChartBar />, label: "Reports" },
           ...commonItems,
@@ -108,7 +108,7 @@ const Sidebar = ({ isOpen, userRole }) => {
               )}
               {userRole === "WORKER" && (
                 <>
-                  <FaUserHardHat /> Worker
+                  <FaHardHat /> Worker
                 </>
               )}
               {userRole === "ADMIN" && (

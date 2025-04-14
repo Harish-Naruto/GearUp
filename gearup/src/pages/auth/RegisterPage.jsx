@@ -3,7 +3,7 @@
 import { useState, useContext } from "react"
 import { Link } from "react-router-dom"
 import { AuthContext } from "../../contexts/AuthContext"
-import { FaCar, FaEnvelope, FaLock, FaSpinner, FaUserTie, FaUserHardHat, FaUser } from "react-icons/fa"
+import { FaCar, FaEnvelope, FaLock, FaSpinner, FaUserTie, FaHardHat, FaUser } from "react-icons/fa"
 import { toast } from "react-toastify"
 import "./AuthPages.css"
 
@@ -124,7 +124,7 @@ const RegisterPage = () => {
                 </div>
                 <div className={`role-option ${role === "WORKER" ? "selected" : ""}`} onClick={() => setRole("WORKER")}>
                   <div className="role-option-icon">
-                    <FaUserHardHat />
+                    <FaHardHat />
                   </div>
                   <div className="role-option-label">Garage Worker</div>
                 </div>
