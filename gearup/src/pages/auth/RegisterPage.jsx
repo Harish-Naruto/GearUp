@@ -3,7 +3,7 @@
 import { useState, useContext } from "react"
 import { Link } from "react-router-dom"
 import { AuthContext } from "../../contexts/AuthContext"
-import { FaCar, FaEnvelope, FaLock, FaSpinner, FaUserTie, FaHardHat, FaUser } from "react-icons/fa"
+import { FaCar, FaEnvelope, FaLock, FaSpinner, FaUserTie, FaHardHat, FaUser, FaPhone, FaIdCard } from "react-icons/fa"
 import { toast } from "react-toastify"
 import "./AuthPages.css"
 
@@ -11,6 +11,9 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [phone, setPhone] = useState("")
   const [role, setRole] = useState("USER")
   const [isLoading, setIsLoading] = useState(false)
   const { register } = useContext(AuthContext)
@@ -30,7 +33,11 @@ const RegisterPage = () => {
         email,
         password,
         role,
-        profile_data: {},
+        profile_data: {
+          firstName,
+          lastName,
+          phone
+        },
       }
 
       const result = await register(userData)
@@ -73,6 +80,47 @@ const RegisterPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="firstName">First Name</label>
+              <div className="input-with-icon">
+                <FaIdCard className="input-icon" />
+                <input
+                  id="firstName"
+                  type="text"
+                  placeholder="John"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="lastName">Last Name</label>
+              <div className="input-with-icon">
+                <FaIdCard className="input-icon" />
+                <input
+                  id="lastName"
+                  type="text"
+                  placeholder="Doe"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="phone">Phone (optional)</label>
+              <div className="input-with-icon">
+                <FaPhone className="input-icon" />
+                <input
+                  id="phone"
+                  type="tel"
+                  placeholder="+1 (555) 123-4567"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
             </div>
