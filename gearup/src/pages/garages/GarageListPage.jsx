@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../contexts/AuthContext';
+import { AuthContext } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { toast } from 'react-toastify';
 
@@ -10,7 +10,7 @@ const GarageListPage = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
-  const { token, user, baseUrl } = useAuth();
+  const { token, user } = useContext(AuthContext);
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const GarageListPage = () => {
   const fetchGarages = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${baseUrl}/api/v1/garages`, {
+      const response = await axios.get(`http://localhost:3000/api/v1/garages`, {
         headers: {
           Authorization: `Bearer ${token}`
         },

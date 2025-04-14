@@ -25,13 +25,14 @@ const UserProfilePage = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      const response = await axios.get('/api/v1/users/me', {
+      const response = await axios.get('http://localhost:3000/api/v1/users/me', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-
+      
       const { user, worker, garage } = response.data.data;
+      
       
       setUser(user);
       setWorker(worker);

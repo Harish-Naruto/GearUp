@@ -37,7 +37,7 @@ const BookingManagementPage = () => {
     setLoading(true);
     try {
       // Fetch bookings
-      const bookingsResponse = await axios.get('/api/bookings', {
+      const bookingsResponse = await axios.get('http://localhost:3000/api/v1/bookings', {
         headers: { Authorization: `Bearer ${token}` },
         params: statusFilter !== 'all' ? { status: statusFilter } : {}
       });
@@ -45,7 +45,7 @@ const BookingManagementPage = () => {
       setBookings(bookingsResponse.data.data.bookings);
       
       // Fetch workers for the garage
-      const workersResponse = await axios.get('/api/workers', {
+      const workersResponse = await axios.get('http://localhost:3000/api/v1/workers', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -62,7 +62,7 @@ const BookingManagementPage = () => {
   const handleStatusChange = async (bookingId, newStatus) => {
     try {
       await axios.patch(
-        `/api/bookings/${bookingId}/status`, 
+        `http://localhost:3000/api/v1/bookings/${bookingId}/status`, 
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` }}
       );
@@ -84,7 +84,7 @@ const BookingManagementPage = () => {
     try {
       // First confirm the booking
       await axios.patch(
-        `/api/bookings/${bookingId}/status`, 
+        `http://localhost:3000/api/v1/bookings/${bookingId}/status`, 
         { 
           status: 'CONFIRMED',
           worker_id: workerId 

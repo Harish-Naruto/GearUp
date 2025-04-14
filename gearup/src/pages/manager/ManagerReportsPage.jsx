@@ -42,7 +42,7 @@ const ManagerReportsPage = () => {
     setLoading(true);
     try {
       // Fetch all bookings for the manager's garage
-      const bookingsResponse = await axios.get('/api/bookings', {
+      const bookingsResponse = await axios.get('http://localhost:3000/api/v1/bookings', {
         headers: { Authorization: `Bearer ${token}` }
       });
       

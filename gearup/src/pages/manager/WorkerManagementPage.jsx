@@ -48,7 +48,7 @@ const WorkerManagementPage = () => {
       if (filterParams.status) params.append('status', filterParams.status);
       if (sort) params.append('sort', sort);
       
-      const response = await axios.get(`/api/v1/workers?${params.toString()}`, {
+      const response = await axios.get(`http://localhost:3000/api/v1/workers?${params.toString()}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -65,7 +65,7 @@ const WorkerManagementPage = () => {
   
   const fetchGarages = async () => {
     try {
-      const response = await axios.get('/api/v1/garages', {
+      const response = await axios.get('http://localhost:3000/api/v1/garages', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setGarages(response.data.data.garages);
@@ -76,7 +76,7 @@ const WorkerManagementPage = () => {
   
   const handleAddWorker = async (formData) => {
     try {
-      await axios.post('/api/v1/workers', formData, {
+      await axios.post('http://localhost:3000/api/v1/workers', formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -91,7 +91,7 @@ const WorkerManagementPage = () => {
   
   const handleUpdateWorker = async (formData) => {
     try {
-      await axios.put(`/api/v1/workers/${selectedWorker.id}`, formData, {
+      await axios.put(`http://localhost:3000/api/v1/workers/${selectedWorker.id}`, formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -106,7 +106,7 @@ const WorkerManagementPage = () => {
   
   const handleDeleteWorker = async () => {
     try {
-      await axios.delete(`/api/v1/workers/${selectedWorker.id}`, {
+      await axios.delete(`http://localhost:3000/api/v1/workers/${selectedWorker.id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -160,7 +160,7 @@ const WorkerManagementPage = () => {
     
     try {
       // Fetch more detailed worker info
-      const response = await axios.get(`/api/v1/workers/${worker.id}`, {
+      const response = await axios.get(`http://localhost:3000/api/v1/workers/${worker.id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       

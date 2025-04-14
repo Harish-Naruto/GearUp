@@ -26,7 +26,7 @@ const WorkerDashboardPage = () => {
       try {
         setLoading(true);
         // Get profile data (including worker info)
-        const profileRes = await axios.get('/api/v1/users/me', {
+        const profileRes = await axios.get('http://localhost:3000/api/v1/users/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -35,7 +35,7 @@ const WorkerDashboardPage = () => {
           
           // Fetch today's assignments
           const workerId = profileRes.data.data.worker.id;
-          const assignmentsRes = await axios.get(`/api/v1/workers/${workerId}/assignments`, {
+          const assignmentsRes = await axios.get(`http://localhost:3000/api/v1/workers/${workerId}/assignments`, {
             headers: { Authorization: `Bearer ${token}` },
             params: { status: 'CONFIRMED,IN_PROGRESS' }
           });
@@ -49,7 +49,7 @@ const WorkerDashboardPage = () => {
         }
 
         // Fetch notifications
-        const notifRes = await axios.get('/api/v1/users/notifications', {
+        const notifRes = await axios.get('http://localhost:3000/api/v1/users/notifications', {
           headers: { Authorization: `Bearer ${token}` },
           params: { read: false, limit: 5 }
         });
@@ -67,7 +67,7 @@ const WorkerDashboardPage = () => {
 
   const markNotificationAsRead = async (notificationId) => {
     try {
-      await axios.patch(`/api/v1/users/notifications/${notificationId}`, {}, {
+      await axios.patch(`http://localhost:3000/api/v1/users/notifications/${notificationId}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -251,7 +251,7 @@ const WorkerDashboardPage = () => {
         <Card.Body>
           <Card.Title>Quick Actions</Card.Title>
           <div className="d-grid gap-2 d-md-flex">
-            <Button onClick={() => navigate('/worker/availability')}>
+            <Button onClick={() => navigate(`/worker/availability`)}>
               Update Availability
             </Button>
             <Button variant="outline-primary" onClick={() => navigate('/profile')}>

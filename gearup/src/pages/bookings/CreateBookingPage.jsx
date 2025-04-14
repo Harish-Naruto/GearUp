@@ -29,10 +29,11 @@ const CreateBookingPage = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get('/api/v1/garages', {
+      const response = await axios.get('http://localhost:3000/api/v1/garages', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      console.log('Garages data:', response.data.data.garages);
       setGarages(response.data.data.garages || []);
     } catch (error) {
       toast.error('Failed to fetch available garages');
@@ -63,7 +64,7 @@ const CreateBookingPage = () => {
         estimated_duration: parseInt(formData.estimated_duration)
       };
       
-      const response = await axios.post('/api/v1/bookings', bookingData, {
+      const response = await axios.post('http://localhost:3000/api/v1/bookings', bookingData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -76,6 +77,24 @@ const CreateBookingPage = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  // Helper function to format garage location based on its structure
+  const formatGarageLocation = (location) => {
+    if (!location) return 'No location';
+    
+    // If location is an object with address property
+    if (typeof location === 'object' && location.address) {
+      return location.address;
+    }
+    
+    // If location is a string
+    if (typeof location === 'string') {
+      return location;
+    }
+    
+    // Fallback: convert object to string representation
+    return JSON.stringify(location);
   };
 
   // Helper function to set minimum date time (current time + 1 hour)
@@ -121,7 +140,7 @@ const CreateBookingPage = () => {
                 <option value="">Choose a garage</option>
                 {garages.map(garage => (
                   <option key={garage.id} value={garage.id}>
-                    {garage.name} - {garage.location}
+                    {garage.name} - {formatGarageLocation(garage.location)}
                   </option>
                 ))}
               </select>

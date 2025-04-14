@@ -25,7 +25,7 @@ const ManagerDashboardPage = () => {
         setIsLoading(true);
         
         // Get manager profile which includes their garage
-        const profileResponse = await axios.get('/api/v1/users/me', {
+        const profileResponse = await axios.get('http://localhost:3000/api/v1/users/me', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         
@@ -33,14 +33,14 @@ const ManagerDashboardPage = () => {
           setGarageData(profileResponse.data.data.garage);
           
           // Get workers for this garage
-          const workersResponse = await axios.get('/api/v1/workers', {
+          const workersResponse = await axios.get('http://localhost:3000/api/v1/workers', {
             params: { garage_id: profileResponse.data.data.garage.id },
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
           });
           setWorkers(workersResponse.data.data.workers);
           
           // Get recent bookings (simplified - actual endpoint might differ)
-          const bookingsResponse = await axios.get('/api/v1/bookings', {
+          const bookingsResponse = await axios.get('http://localhost:3000/api/v1/bookings', {
             params: { 
               garage_id: profileResponse.data.data.garage.id,
               limit: 5
@@ -51,7 +51,7 @@ const ManagerDashboardPage = () => {
         }
         
         // Get notifications
-        const notificationsResponse = await axios.get('/api/v1/users/notifications', {
+        const notificationsResponse = await axios.get('http://localhost:3000/api/v1/users/notifications', {
           params: { read: false, limit: 5 },
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
@@ -70,7 +70,7 @@ const ManagerDashboardPage = () => {
 
   const markNotificationAsRead = async (notificationId) => {
     try {
-      await axios.patch(`/api/v1/users/notifications/${notificationId}`, {}, {
+      await axios.patch(`http://localhost:3000/api/v1/users/notifications/${notificationId}`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       

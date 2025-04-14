@@ -29,7 +29,7 @@ const GarageDetailPage = () => {
   const fetchGarageDetails = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${baseUrl}/api/v1/garages/${id}`, {
+      const response = await axios.get(`http://localhost:3000/api/v1/garages/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -48,7 +48,7 @@ const GarageDetailPage = () => {
     e.preventDefault();
     try {
       await axios.post(
-        `${baseUrl}/api/v1/garages/${id}/ratings`,
+        `http://localhost:3000/api/v1/garages/${id}/ratings`,
         { rating: ratingValue, review },
         {
           headers: {
@@ -72,7 +72,7 @@ const GarageDetailPage = () => {
   const handleDeleteGarage = async () => {
     if (window.confirm('Are you sure you want to delete this garage? This action cannot be undone.')) {
       try {
-        await axios.delete(`${baseUrl}/api/v1/garages/${id}`, {
+        await axios.delete(`http://localhost:3000/api/v1/garages/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

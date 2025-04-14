@@ -30,7 +30,7 @@ const BookingDetailPage = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get(`/api/v1/bookings/${id}`, {
+      const response = await axios.get(`http://localhost:3000/api/v1/bookings/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -54,7 +54,7 @@ const BookingDetailPage = () => {
       const token = localStorage.getItem('token');
       // This assumes you have an endpoint to fetch workers for a garage
       // You might need to adjust this based on your actual API
-      const response = await axios.get(`/api/v1/workers`, {
+      const response = await axios.get(`http://localhost:3000/api/v1/workers`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -74,7 +74,7 @@ const BookingDetailPage = () => {
         payload.worker_id = workerId;
       }
       
-      await axios.patch(`/api/v1/bookings/${id}/status`, payload, {
+      await axios.patch(`http://localhost:3000/api/v1/bookings/${id}/status`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -98,7 +98,7 @@ const BookingDetailPage = () => {
         payload.amount = parseFloat(amount);
       }
       
-      await axios.patch(`/api/v1/bookings/${id}/payment`, payload, {
+      await axios.patch(`http://localhost:3000/api/v1/bookings/${id}/payment`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -117,7 +117,7 @@ const BookingDetailPage = () => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`/api/v1/bookings/${id}`, {
+      await axios.delete(`http://localhost:3000/api/v1/bookings/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -152,6 +152,20 @@ const BookingDetailPage = () => {
       case 'FAILED': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  // Helper function to properly display location
+  const formatLocation = (location) => {
+    if (!location) return 'N/A';
+    // Check if location is an object
+    if (typeof location === 'object') {
+      // If it has an address property, use that
+      if (location.address) return location.address;
+      // Otherwise, stringify the object but don't render it directly
+      return JSON.stringify(location);
+    }
+    // If it's already a string, just return it
+    return location;
   };
 
   if (loading) {
@@ -237,12 +251,16 @@ const BookingDetailPage = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Location</p>
-                  <p className="font-medium">{booking.garages?.location || 'N/A'}</p>
+                  <p className="font-medium">{formatLocation(booking.garages?.location)}</p>
                 </div>
                 {booking.garages?.contact_info && (
                   <div>
                     <p className="text-sm text-gray-500">Contact</p>
-                    <p className="font-medium">{booking.garages.contact_info}</p>
+                    <p className="font-medium">
+                      {typeof booking.garages.contact_info === 'object' 
+                        ? booking.garages.contact_info.phone || JSON.stringify(booking.garages.contact_info) 
+                        : booking.garages.contact_info}
+                    </p>
                   </div>
                 )}
                 {booking.workers && (

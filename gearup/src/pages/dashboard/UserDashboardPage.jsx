@@ -21,7 +21,7 @@ const UserDashboardPage = () => {
     const fetchDashboardData = async () => {
       try {
         // Fetch recent bookings
-        const bookingsResponse = await api.get("/bookings", {
+        const bookingsResponse = await api.get("http://localhost:3000/bookings", {
           params: {
             limit: 5,
             sort: "-created_at",
@@ -54,7 +54,7 @@ const UserDashboardPage = () => {
         setLoading((prev) => ({ ...prev, vehicles: false }))
 
         // Fetch notifications
-        const notificationsResponse = await api.get("/users/notifications")
+        const notificationsResponse = await api.get("http://localhost:3000/users/notifications")
         setNotifications(notificationsResponse.data.data.notifications)
         setLoading((prev) => ({ ...prev, notifications: false }))
       } catch (error) {

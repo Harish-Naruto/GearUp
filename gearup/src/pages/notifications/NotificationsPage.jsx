@@ -17,7 +17,7 @@ const NotificationsPage = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      let url = '/api/v1/users/notifications';
+      let url = 'http://localhost:3000/api/v1/users/notifications';
       
       // Apply filters
       if (filter === 'read') {
@@ -45,7 +45,7 @@ const NotificationsPage = () => {
     try {
       const token = localStorage.getItem('token');
       
-      await axios.patch(`/api/v1/users/notifications/${id}`, {}, {
+      await axios.patch(`http://localhost:3000/api/v1/users/notifications/${id}`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -71,6 +71,32 @@ const NotificationsPage = () => {
     } catch (error) {
       return 'Unknown time';
     }
+  };
+
+  // Helper function to safely get notification content
+  const getNotificationContent = (notification) => {
+    // Check for content property first
+    if (notification.content) {
+      if (typeof notification.content === 'string') {
+        return notification.content;
+      } else if (typeof notification.content === 'object') {
+        // If content is an object, try to extract message or stringify it
+        return notification.content.message || JSON.stringify(notification.content);
+      }
+    }
+    
+    // Fall back to message if content is not available
+    if (notification.message) {
+      if (typeof notification.message === 'string') {
+        return notification.message;
+      } else if (typeof notification.message === 'object') {
+        // If message is an object, try to extract nested message or stringify it
+        return notification.message.message || JSON.stringify(notification.message);
+      }
+    }
+    
+    // Default fallback
+    return 'No content available';
   };
 
   return (
@@ -132,7 +158,7 @@ const NotificationsPage = () => {
               </div>
               
               <div className="mt-2">
-                <p>{notification.content || notification.message}</p>
+                <p>{getNotificationContent(notification)}</p>
               </div>
               
               {/* Conditionally render action buttons based on notification type */}

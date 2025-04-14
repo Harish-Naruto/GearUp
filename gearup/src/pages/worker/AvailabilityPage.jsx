@@ -29,7 +29,7 @@ const AvailabilityPage = () => {
     const fetchWorker = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/v1/workers/${id}`, {
+        const response = await axios.get(`http://localhost:3000/api/v1/workers/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -74,7 +74,7 @@ const AvailabilityPage = () => {
     try {
       setIsSubmitting(true);
       
-      await axios.put(`/api/v1/workers/${id}/availability`, {
+      await axios.put(`http://localhost:3000/api/v1/workers/${id}/availability`, {
         availability
       }, {
         headers: { Authorization: `Bearer ${token}` }

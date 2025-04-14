@@ -26,7 +26,7 @@ const BookingListPage = () => {
       if (filters.payment_status) queryParams.append('payment_status', filters.payment_status);
       if (sort) queryParams.append('sort', sort);
       
-      const response = await axios.get(`/api/v1/bookings?${queryParams.toString()}`, {
+      const response = await axios.get(`http://localhost:3000/api/v1/bookings?${queryParams.toString()}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       

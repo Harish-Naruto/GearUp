@@ -102,7 +102,7 @@ const GarageManagementPage = () => {
       if (searchTerm) queryParams.append('search', searchTerm);
       if (sortOrder) queryParams.append('sort', sortOrder);
       
-      const response = await axios.get(`/api/v1/garages?${queryParams.toString()}`, {
+      const response = await axios.get(`http://localhost:3000/api/v1/garages?${queryParams.toString()}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -276,14 +276,14 @@ const GarageManagementPage = () => {
       let response;
       
       if (dialogMode === 'create') {
-        response = await axios.post('/api/v1/garages', garageForm, {
+        response = await axios.post('http://localhost:3000/api/v1/garages', garageForm, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
         showNotification('Garage created successfully');
       } else {
-        response = await axios.put(`/api/v1/garages/${currentGarage.id}`, garageForm, {
+        response = await axios.put(`http://localhost:3000/api/v1/garages/${currentGarage.id}`, garageForm, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -300,7 +300,7 @@ const GarageManagementPage = () => {
 
   const submitServiceForm = async () => {
     try {
-      await axios.post(`/api/v1/garages/${currentGarage.id}/services`, serviceForm, {
+      await axios.post(`http://localhost:3000/api/v1/garages/${currentGarage.id}/services`, serviceForm, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -316,7 +316,7 @@ const GarageManagementPage = () => {
 
   const deleteService = async (garageId, serviceId) => {
     try {
-      await axios.delete(`/api/v1/garages/${garageId}/services/${serviceId}`, {
+      await axios.delete(`http://localhost:3000/api/v1/garages/${garageId}/services/${serviceId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -333,7 +333,7 @@ const GarageManagementPage = () => {
     if (!window.confirm('Are you sure you want to delete this garage?')) return;
     
     try {
-      await axios.delete(`/api/v1/garages/${garageId}`, {
+      await axios.delete(`http://localhost:3000/api/v1/garages/${garageId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }

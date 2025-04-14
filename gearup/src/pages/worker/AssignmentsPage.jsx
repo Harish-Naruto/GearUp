@@ -43,7 +43,7 @@ const AssignmentsPage = () => {
         setError(null);
         
         // First get worker ID from profile
-        const profileRes = await axios.get('/api/v1/users/me', {
+        const profileRes = await axios.get('http://localhost:3000/api/v1/users/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -71,7 +71,7 @@ const AssignmentsPage = () => {
   const fetchAssignments = async (id) => {
     try {
       setIsLoading(true);
-      const res = await axios.get(`/api/v1/workers/${id}/assignments`, {
+      const res = await axios.get(`http://localhost:3000/api/v1/workers/${id}/assignments`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -139,7 +139,7 @@ const AssignmentsPage = () => {
 
   const updateAssignmentStatus = async (assignmentId, newStatus) => {
     try {
-      await axios.put(`/api/v1/bookings/${assignmentId}`, 
+      await axios.put(`http://localhost:3000/api/v1/bookings/${assignmentId}`, 
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` }}
       );

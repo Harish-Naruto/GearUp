@@ -27,7 +27,7 @@ const ServiceManagementPage = () => {
     const fetchGarage = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('/api/garages', {
+        const response = await axios.get('http://localhost:3000/api/v1/garages/', {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -93,7 +93,7 @@ const ServiceManagementPage = () => {
         duration: parseInt(formData.duration)
       };
       
-      const response = await axios.post(`/api/garages/${garage.id}/services`, payload, {
+      const response = await axios.post(`http://localhost:3000/api/v1/garages/${garage.id}/services`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -128,7 +128,7 @@ const ServiceManagementPage = () => {
         return service;
       });
       
-      const response = await axios.put(`/api/garages/${garage.id}`, {
+      const response = await axios.put(`http://localhost:3000/api/v1/garages/${garage.id}`, {
         services: updatedServices
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -148,7 +148,7 @@ const ServiceManagementPage = () => {
     if (!window.confirm('Are you sure you want to remove this service?')) return;
     
     try {
-      await axios.delete(`/api/garages/${garage.id}/services/${serviceId}`, {
+      await axios.delete(`http://localhost:3000/api/v1/garages/${garage.id}/services/${serviceId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
