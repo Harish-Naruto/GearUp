@@ -135,7 +135,7 @@ const VehicleDetailPage = () => {
               id: 'img1',
               title: 'Front View',
               uploadDate: '2020-03-12',
-              url: '/api/placeholder/640/400'
+              url: '/image.png'
             },
             {
               id: 'img2',

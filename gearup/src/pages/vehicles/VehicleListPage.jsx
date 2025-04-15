@@ -33,7 +33,7 @@ const VehicleListPage = () => {
               last_service: "2023-01-15",
               next_service_due: "2023-07-15",
               mileage: 35000,
-              image: "/images/car-toyota.jpg",
+              image: "/image.png",
             },
             {
               id: "2",
@@ -47,7 +47,7 @@ const VehicleListPage = () => {
               last_service: "2023-03-22",
               next_service_due: "2023-09-22",
               mileage: 28000,
-              image: "/images/car-honda.jpg",
+              image: "/image1.jpg",
             },
             {
               id: "3",
@@ -61,7 +61,7 @@ const VehicleListPage = () => {
               last_service: "2023-05-10",
               next_service_due: "2023-11-10",
               mileage: 45000,
-              image: "/images/car-ford.jpg",
+              image: "/image3.jpg",
             },
             {
               id: "4",
@@ -75,7 +75,7 @@ const VehicleListPage = () => {
               last_service: "2023-02-05",
               next_service_due: "2023-08-05",
               mileage: 15000,
-              image: "/images/car-chevrolet.jpg",
+              image: "/image4.jpg",
             },
           ]
           setVehicles(mockVehicles)
