@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
- 
   UserGroupIcon, 
   StarIcon, 
   BellIcon 
 } from '@heroicons/react/outline';
 
-import { CalendarDaysIcon,Wrench } from 'lucide-react';
-
+import { CalendarDaysIcon, Wrench } from 'lucide-react';
+import './ManagerDashboard.css';
 
 const ManagerDashboardPage = () => {
   const [garageData, setGarageData] = useState(null);
@@ -83,16 +82,16 @@ const ManagerDashboardPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+      <div className="error-container">
+        <div className="error-box">
           <p>{error}</p>
         </div>
       </div>
@@ -101,15 +100,15 @@ const ManagerDashboardPage = () => {
 
   if (!garageData) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen px-4">
-        <Wrench className="w-16 h-16 text-gray-400 mb-4" />
-        <h2 className="text-2xl font-semibold mb-2">No Garage Found</h2>
-        <p className="text-gray-600 mb-6 text-center">
+      <div className="empty-state">
+        <Wrench className="empty-icon" />
+        <h2 className="empty-title">No Garage Found</h2>
+        <p className="empty-message">
           You don't have a garage yet. Create one to start managing services.
         </p>
         <Link
           to="/manager/garage/create"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          className="create-button"
         >
           Create Garage
         </Link>
@@ -118,104 +117,89 @@ const ManagerDashboardPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">{garageData.name}</h1>
-        <p className="text-gray-600">{garageData.location.address}</p>
+    <div className="container">
+      <div className="dashboard-header">
+        <h1 className="garage-name">{garageData.name}</h1>
+        <p className="garage-address">{garageData.location.address}</p>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center mb-2">
-            <CalendarDaysIcon className="h-5 w-5 text-blue-500 mr-2" />
-            <h3 className="font-semibold text-gray-700">Today's Bookings</h3>
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-header">
+            <CalendarDaysIcon className="stat-icon h-5 w-5" />
+            <h3 className="stat-title">Today's Bookings</h3>
           </div>
-          <p className="text-2xl font-bold">
+          <p className="stat-value">
             {recentBookings.filter(b => 
               new Date(b.scheduled_time).toDateString() === new Date().toDateString()
             ).length}
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center mb-2">
-            <UserGroupIcon className="h-5 w-5 text-green-500 mr-2" />
-            <h3 className="font-semibold text-gray-700">Active Workers</h3>
+        <div className="stat-card">
+          <div className="stat-header">
+            <UserGroupIcon className="stat-icon h-5 w-5" />
+            <h3 className="stat-title">Active Workers</h3>
           </div>
-          <p className="text-2xl font-bold">
+          <p className="stat-value">
             {workers.filter(w => w.status === 'ACTIVE').length}
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center mb-2">
-            <Wrench className="h-5 w-5 text-purple-500 mr-2" />
-            <h3 className="font-semibold text-gray-700">Services Offered</h3>
+        <div className="stat-card">
+          <div className="stat-header">
+            <Wrench className="stat-icon h-5 w-5" />
+            <h3 className="stat-title">Services Offered</h3>
           </div>
-          <p className="text-2xl font-bold">
+          <p className="stat-value">
             {garageData.services ? garageData.services.length : 0}
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center mb-2">
-            <StarIcon className="h-5 w-5 text-yellow-500 mr-2" />
-            <h3 className="font-semibold text-gray-700">Average Rating</h3>
+        <div className="stat-card">
+          <div className="stat-header">
+            <StarIcon className="stat-icon h-5 w-5" />
+            <h3 className="stat-title">Average Rating</h3>
           </div>
-          <p className="text-2xl font-bold">
+          <p className="stat-value">
             {garageData.ratings ? garageData.ratings.toFixed(1) : 'No ratings'}
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="content-grid">
         {/* Recent Bookings */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow mb-6">
-            <div className="p-4 border-b border-gray-200">
-              <h2 className="text-xl font-semibold">Recent Bookings</h2>
+        <div>
+          <div className="dashboard-card">
+            <div className="card-header">
+              <h2 className="card-title">Recent Bookings</h2>
             </div>
-            <div className="p-4">
+            <div className="card-body">
               {recentBookings.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                <div className="table-container">
+                  <table>
                     <thead>
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Customer
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Service
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Status
-                        </th>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody>
                       {recentBookings.map((booking) => (
                         <tr key={booking.id}>
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            {booking.users?.email || 'Customer'}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            {booking.service_details?.name || 'Service'}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            {new Date(booking.scheduled_time).toLocaleDateString()}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5
-                              font-semibold rounded-full
-                              ${booking.status === 'CONFIRMED' ? 'bg-green-100 text-green-800' :
-                                booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                booking.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
-                                'bg-blue-100 text-blue-800'}`
-                            }>
+                          <td>{booking.users?.email || 'Customer'}</td>
+                          <td>{booking.service_details?.name || 'Service'}</td>
+                          <td>{new Date(booking.scheduled_time).toLocaleDateString()}</td>
+                          <td>
+                            <span className={`status-badge ${
+                              booking.status === 'CONFIRMED' ? 'status-confirmed' :
+                              booking.status === 'PENDING' ? 'status-pending' :
+                              booking.status === 'CANCELLED' ? 'status-cancelled' :
+                              'status-completed'
+                            }`}>
                               {booking.status}
                             </span>
                           </td>
@@ -225,95 +209,102 @@ const ManagerDashboardPage = () => {
                   </table>
                 </div>
               ) : (
-                <p className="text-gray-500 text-center py-4">No recent bookings found</p>
+                <p className="text-center py-4">No recent bookings found</p>
               )}
-              <div className="mt-4 text-right">
-                <Link 
-                  to="/manager/bookings" 
-                  className="text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  View All Bookings
-                </Link>
-              </div>
+            </div>
+            <div className="card-footer">
+              <Link to="/manager/bookings" className="view-all">
+                View All Bookings
+              </Link>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-4 border-b border-gray-200">
-              <h2 className="text-xl font-semibold">Quick Actions</h2>
+          <div className="dashboard-card">
+            <div className="card-header">
+              <h2 className="card-title">Quick Actions</h2>
             </div>
-            <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Link 
-                to="/manager/garage" 
-                className="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
-              >
-                <Wrench className="h-8 w-8 text-blue-600 mr-3" />
-                <div>
-                  <h3 className="font-semibold">Manage Garage</h3>
-                  <p className="text-sm text-gray-600">Update services and details</p>
-                </div>
-              </Link>
-              
-              <Link 
-                to="/manager/workers" 
-                className="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition"
-              >
-                <UserGroupIcon className="h-8 w-8 text-green-600 mr-3" />
-                <div>
-                  <h3 className="font-semibold">Manage Workers</h3>
-                  <p className="text-sm text-gray-600">View and assign workers</p>
-                </div>
-              </Link>
-              
-              <Link 
-                to="/manager/bookings/new" 
-                className="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition"
-              >
-                <CalendarDaysIcon className="h-8 w-8 text-purple-600 mr-3" />
-                <div>
-                  <h3 className="font-semibold">Create Booking</h3>
-                  <p className="text-sm text-gray-600">Schedule a new service</p>
-                </div>
-              </Link>
-              
-              <Link 
-                to="/manager/reports" 
-                className="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition"
-              >
-                <StarIcon className="h-8 w-8 text-yellow-600 mr-3" />
-                <div>
-                  <h3 className="font-semibold">View Reports</h3>
-                  <p className="text-sm text-gray-600">Analytics and performance</p>
-                </div>
-              </Link>
+            <div className="card-body">
+              <div className="actions-grid">
+                <Link 
+                  to="/manager/garage" 
+                  className="action-link action-blue"
+                >
+                  <div className="action-icon">
+                    <Wrench />
+                  </div>
+                  <div className="action-text">
+                    <h3>Manage Garage</h3>
+                    <p>Update services and details</p>
+                  </div>
+                </Link>
+                
+                <Link 
+                  to="/manager/workers" 
+                  className="action-link action-green"
+                >
+                  <div className="action-icon">
+                    <UserGroupIcon className="h-8 w-8" />
+                  </div>
+                  <div className="action-text">
+                    <h3>Manage Workers</h3>
+                    <p>View and assign workers</p>
+                  </div>
+                </Link>
+                
+                <Link 
+                  to="/manager/bookings/new" 
+                  className="action-link action-purple"
+                >
+                  <div className="action-icon">
+                    <CalendarDaysIcon />
+                  </div>
+                  <div className="action-text">
+                    <h3>Create Booking</h3>
+                    <p>Schedule a new service</p>
+                  </div>
+                </Link>
+                
+                <Link 
+                  to="/manager/reports" 
+                  className="action-link action-yellow"
+                >
+                  <div className="action-icon">
+                    <StarIcon className="h-8 w-8" />
+                  </div>
+                  <div className="action-text">
+                    <h3>View Reports</h3>
+                    <p>Analytics and performance</p>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Notifications Panel */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Notifications</h2>
-            <BellIcon className="h-5 w-5 text-gray-500" />
+        <div className="dashboard-card">
+          <div className="card-header">
+            <h2 className="card-title">Notifications</h2>
+            <BellIcon className="h-5 w-5" />
           </div>
-          <div className="p-4">
+          <div className="card-body">
             {notifications.length > 0 ? (
-              <ul className="divide-y divide-gray-200">
+              <ul className="notifications-list">
                 {notifications.map(notification => (
-                  <li key={notification.id} className="py-4">
-                    <div className="flex justify-between">
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">
+                  <li key={notification.id} className="notification-item">
+                    <div className="notification-content">
+                      <div>
+                        <p className="notification-message">
                           {notification.content.message}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="notification-time">
                           {new Date(notification.created_at).toLocaleString()}
                         </p>
                       </div>
                       <button
                         onClick={() => markNotificationAsRead(notification.id)}
-                        className="text-xs text-blue-600 hover:text-blue-800"
+                        className="mark-read-btn"
                       >
                         Mark as read
                       </button>
@@ -322,16 +313,16 @@ const ManagerDashboardPage = () => {
                 ))}
               </ul>
             ) : (
-              <p className="text-gray-500 text-center py-4">No new notifications</p>
+              <p className="text-center py-4">No new notifications</p>
             )}
-            <div className="mt-4 text-right">
-              <Link 
-                to="/notifications" 
-                className="text-blue-600 hover:text-blue-800 font-medium"
-              >
-                View All Notifications
-              </Link>
-            </div>
+          </div>
+          <div className="card-footer">
+            <Link 
+              to="/notifications" 
+              className="view-all"
+            >
+              View All Notifications
+            </Link>
           </div>
         </div>
       </div>

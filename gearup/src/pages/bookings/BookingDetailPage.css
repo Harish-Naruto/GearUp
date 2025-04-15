@@ -1,0 +1,313 @@
+/* BookingDetailPage.css - Matching Dashboard Theme */
+
+/* Container styles */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  /* Back button styles */
+  .back-link {
+    display: inline-block;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    transition: color 0.2s ease;
+  }
+  
+  .back-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+  }
+  
+  /* Card styles */
+  .booking-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .card-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  /* Badge styles */
+  .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  
+  /* Status badge variants */
+  .status-pending {
+    background-color: var(--warning-light);
+    color: var(--warning-color);
+  }
+  
+  .status-confirmed {
+    background-color: var(--info-light);
+    color: var(--info-color);
+  }
+  
+  .status-in-progress {
+    background-color: var(--purple-light);
+    color: var(--purple-color);
+  }
+  
+  .status-completed {
+    background-color: var(--success-light);
+    color: var(--success-color);
+  }
+  
+  .status-cancelled {
+    background-color: var(--danger-light);
+    color: var(--danger-color);
+  }
+  
+  /* Payment badge variants */
+  .payment-paid {
+    background-color: var(--success-light);
+    color: var(--success-color);
+  }
+  
+  .payment-pending {
+    background-color: var(--warning-light);
+    color: var(--warning-color);
+  }
+  
+  .payment-refunded {
+    background-color: var(--info-light);
+    color: var(--info-color);
+  }
+  
+  .payment-failed {
+    background-color: var(--danger-light);
+    color: var(--danger-color);
+  }
+  
+  /* Grid layout */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .info-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  /* Information sections */
+  .info-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .info-section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+  
+  .info-item {
+    margin-bottom: 0.75rem;
+  }
+  
+  .info-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+  
+  .info-value {
+    font-weight: 500;
+    color: var(--text-color);
+  }
+  
+  /* Form elements */
+  .form-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .form-section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    transition: all 0.2s ease;
+  }
+  
+  .form-control:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-light);
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    border: none;
+  }
+  
+  .btn-blue {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .btn-blue:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  .btn-red {
+    background-color: var(--danger-color);
+    color: white;
+  }
+  
+  .btn-red:hover {
+    background-color: var(--danger-dark);
+  }
+  
+  .btn-green {
+    background-color: var(--success-color);
+    color: white;
+  }
+  
+  .btn-green:hover {
+    background-color: var(--success-dark);
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  /* Loading spinner */
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Error message */
+  .error-container {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 2.5rem;
+    text-align: center;
+  }
+  
+  .error-message {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 992px) {
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .card-header-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+    }
+    
+    .button-group {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+  }

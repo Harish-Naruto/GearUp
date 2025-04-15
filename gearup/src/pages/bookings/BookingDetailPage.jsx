@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import './BookingDetailPage.css'; // Import the CSS file
 
 const BookingDetailPage = () => {
   const { id } = useParams();
@@ -135,22 +136,22 @@ const BookingDetailPage = () => {
 
   const getStatusBadgeClass = (status) => {
     switch (status) {
-      case 'PENDING': return 'bg-yellow-100 text-yellow-800';
-      case 'CONFIRMED': return 'bg-blue-100 text-blue-800';
-      case 'IN_PROGRESS': return 'bg-purple-100 text-purple-800';
-      case 'COMPLETED': return 'bg-green-100 text-green-800';
-      case 'CANCELLED': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'PENDING': return 'status-badge status-pending';
+      case 'CONFIRMED': return 'status-badge status-confirmed';
+      case 'IN_PROGRESS': return 'status-badge status-in-progress';
+      case 'COMPLETED': return 'status-badge status-completed';
+      case 'CANCELLED': return 'status-badge status-cancelled';
+      default: return 'status-badge';
     }
   };
 
   const getPaymentStatusBadgeClass = (status) => {
     switch (status) {
-      case 'PAID': return 'bg-green-100 text-green-800';
-      case 'PENDING': return 'bg-yellow-100 text-yellow-800';
-      case 'REFUNDED': return 'bg-blue-100 text-blue-800';
-      case 'FAILED': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'PAID': return 'status-badge payment-paid';
+      case 'PENDING': return 'status-badge payment-pending';
+      case 'REFUNDED': return 'status-badge payment-refunded';
+      case 'FAILED': return 'status-badge payment-failed';
+      default: return 'status-badge';
     }
   };
 
@@ -170,18 +171,18 @@ const BookingDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="loading-container">
+        <div className="spinner"></div>
       </div>
     );
   }
 
   if (!booking) {
     return (
-      <div className="container mx-auto p-4">
-        <div className="bg-white rounded-lg shadow p-10 text-center">
-          <p className="text-gray-500">Booking not found.</p>
-          <Link to="/bookings" className="text-blue-500 hover:underline mt-4 inline-block">
+      <div className="container">
+        <div className="error-container">
+          <p className="error-message">Booking not found.</p>
+          <Link to="/bookings" className="back-link">
             Back to Bookings
           </Link>
         </div>
@@ -190,103 +191,99 @@ const BookingDetailPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container">
       <div className="mb-6">
-        <Link to="/bookings" className="text-blue-500 hover:underline">
+        <Link to="/bookings" className="back-link">
           &larr; Back to Bookings
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="p-6 border-b">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Booking Details</h1>
+      <div className="booking-card">
+        <div className="card-header">
+          <div className="card-header-content">
+            <h1 className="card-title">Booking Details</h1>
             <div>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass(booking.status)}`}>
+              <span className={getStatusBadgeClass(booking.status)}>
                 {booking.status}
               </span>
-              <span className={`ml-2 px-3 py-1 rounded-full text-sm font-medium ${getPaymentStatusBadgeClass(booking.payment_status)}`}>
+              <span className={`ml-2 ${getPaymentStatusBadgeClass(booking.payment_status)}`}>
                 {booking.payment_status}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h2 className="text-lg font-semibold mb-4">Service Information</h2>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-gray-500">Service Type</p>
-                  <p className="font-medium">{booking.service_type}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Description</p>
-                  <p className="font-medium">{booking.description || 'No description provided'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Scheduled Time</p>
-                  <p className="font-medium">{formatDate(booking.scheduled_time)}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Estimated Duration</p>
-                  <p className="font-medium">{booking.estimated_duration || 'Not specified'} minutes</p>
-                </div>
-                {booking.amount && (
-                  <div>
-                    <p className="text-sm text-gray-500">Amount</p>
-                    <p className="font-medium">${booking.amount.toFixed(2)}</p>
-                  </div>
-                )}
+        <div className="card-body">
+          <div className="info-grid">
+            <div className="info-section">
+              <h2 className="info-section-title">Service Information</h2>
+              <div className="info-item">
+                <p className="info-label">Service Type</p>
+                <p className="info-value">{booking.service_type}</p>
               </div>
+              <div className="info-item">
+                <p className="info-label">Description</p>
+                <p className="info-value">{booking.description || 'No description provided'}</p>
+              </div>
+              <div className="info-item">
+                <p className="info-label">Scheduled Time</p>
+                <p className="info-value">{formatDate(booking.scheduled_time)}</p>
+              </div>
+              <div className="info-item">
+                <p className="info-label">Estimated Duration</p>
+                <p className="info-value">{booking.estimated_duration || 'Not specified'} minutes</p>
+              </div>
+              {booking.amount && (
+                <div className="info-item">
+                  <p className="info-label">Amount</p>
+                  <p className="info-value">${booking.amount.toFixed(2)}</p>
+                </div>
+              )}
             </div>
 
-            <div>
-              <h2 className="text-lg font-semibold mb-4">Garage Information</h2>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-gray-500">Garage Name</p>
-                  <p className="font-medium">{booking.garages?.name || 'N/A'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Location</p>
-                  <p className="font-medium">{formatLocation(booking.garages?.location)}</p>
-                </div>
-                {booking.garages?.contact_info && (
-                  <div>
-                    <p className="text-sm text-gray-500">Contact</p>
-                    <p className="font-medium">
-                      {typeof booking.garages.contact_info === 'object' 
-                        ? booking.garages.contact_info.phone || JSON.stringify(booking.garages.contact_info) 
-                        : booking.garages.contact_info}
-                    </p>
-                  </div>
-                )}
-                {booking.workers && (
-                  <div>
-                    <p className="text-sm text-gray-500">Assigned Worker</p>
-                    <p className="font-medium">
-                      {booking.workers ? `${booking.workers.specialization} Worker` : 'Not assigned yet'}
-                    </p>
-                  </div>
-                )}
+            <div className="info-section">
+              <h2 className="info-section-title">Garage Information</h2>
+              <div className="info-item">
+                <p className="info-label">Garage Name</p>
+                <p className="info-value">{booking.garages?.name || 'N/A'}</p>
               </div>
+              <div className="info-item">
+                <p className="info-label">Location</p>
+                <p className="info-value">{formatLocation(booking.garages?.location)}</p>
+              </div>
+              {booking.garages?.contact_info && (
+                <div className="info-item">
+                  <p className="info-label">Contact</p>
+                  <p className="info-value">
+                    {typeof booking.garages.contact_info === 'object' 
+                      ? booking.garages.contact_info.phone || JSON.stringify(booking.garages.contact_info) 
+                      : booking.garages.contact_info}
+                  </p>
+                </div>
+              )}
+              {booking.workers && (
+                <div className="info-item">
+                  <p className="info-label">Assigned Worker</p>
+                  <p className="info-value">
+                    {booking.workers ? `${booking.workers.specialization} Worker` : 'Not assigned yet'}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Action buttons for user */}
           {userRole === 'USER' && booking.status === 'PENDING' && (
-            <div className="mt-8 flex items-center space-x-4">
+            <div className="button-group">
               <Link 
                 to={`/bookings/${booking.id}/edit`}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                className="btn btn-blue"
               >
                 Edit Booking
               </Link>
               <button 
                 onClick={handleCancelBooking}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                className="btn btn-red"
               >
                 Cancel Booking
               </button>
@@ -295,16 +292,16 @@ const BookingDetailPage = () => {
           
           {/* Status management for workers/managers */}
           {(['MANAGER', 'WORKER'].includes(userRole)) && (
-            <div className="mt-8 border-t pt-6">
-              <h2 className="text-lg font-semibold mb-4">Update Booking Status</h2>
-              <form onSubmit={handleStatusUpdate} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <div className="form-section">
+              <h2 className="form-section-title">Update Booking Status</h2>
+              <form onSubmit={handleStatusUpdate} className="form-group">
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label className="form-label">Status</label>
                     <select 
                       value={statusUpdate} 
                       onChange={(e) => setStatusUpdate(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
+                      className="form-control"
                       required
                     >
                       <option value="PENDING">Pending</option>
@@ -315,12 +312,12 @@ const BookingDetailPage = () => {
                     </select>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Assign Worker (Optional)</label>
+                  <div className="form-group">
+                    <label className="form-label">Assign Worker (Optional)</label>
                     <select 
                       value={workerId} 
                       onChange={(e) => setWorkerId(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
+                      className="form-control"
                     >
                       <option value="">Select a worker</option>
                       {workers.map(worker => (
@@ -335,7 +332,7 @@ const BookingDetailPage = () => {
                 <div>
                   <button 
                     type="submit" 
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                    className="btn btn-blue"
                   >
                     Update Status
                   </button>
@@ -347,16 +344,16 @@ const BookingDetailPage = () => {
           {/* Payment management (available to managers and potentially the user) */}
           {(['MANAGER', 'ADMIN'].includes(userRole) || 
               (userRole === 'USER' && booking.status === 'COMPLETED' && booking.payment_status === 'PENDING')) && (
-            <div className="mt-8 border-t pt-6">
-              <h2 className="text-lg font-semibold mb-4">Update Payment Status</h2>
-              <form onSubmit={handlePaymentUpdate} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
+            <div className="form-section">
+              <h2 className="form-section-title">Update Payment Status</h2>
+              <form onSubmit={handlePaymentUpdate} className="form-group">
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label className="form-label">Payment Status</label>
                     <select 
                       value={paymentStatus} 
                       onChange={(e) => setPaymentStatus(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
+                      className="form-control"
                       required
                     >
                       <option value="PENDING">Pending</option>
@@ -367,13 +364,13 @@ const BookingDetailPage = () => {
                   </div>
                   
                   {['MANAGER', 'ADMIN'].includes(userRole) && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Amount ($)</label>
+                    <div className="form-group">
+                      <label className="form-label">Amount ($)</label>
                       <input 
                         type="number" 
                         value={amount} 
                         onChange={(e) => setAmount(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded"
+                        className="form-control"
                         placeholder="Enter amount"
                         min="0"
                         step="0.01"
@@ -385,7 +382,7 @@ const BookingDetailPage = () => {
                 <div>
                   <button 
                     type="submit" 
-                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                    className="btn btn-green"
                   >
                     Update Payment
                   </button>

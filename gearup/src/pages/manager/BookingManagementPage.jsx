@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ThemeContext } from '../../contexts/ThemeContext';
-import { Spinner } from 'react-bootstrap';
 import ErrorAlert from '../../components/common/ErrorAlert';
 import BookingStatusBadge from '../../components/bookings/BookingStatusBadge';
 import BookingDetailsModal from '../../components/bookings/BookingDetailsModal';
 import AssignWorkerModal from '../../components/bookings/AssignWorkerModal';
+import './BookingManagement.css';
 
 const BookingManagementPage = () => {
   const { user, token } = useContext(AuthContext);
@@ -117,8 +117,6 @@ const BookingManagementPage = () => {
     setIsAssignModalOpen(true);
   };
   
-  if (loading) return <Spinner />;
-  
   const getFilteredBookings = () => {
     if (statusFilter === 'all') return bookings;
     return bookings.filter(booking => booking.status === statusFilter);
@@ -126,121 +124,119 @@ const BookingManagementPage = () => {
   
   const filteredBookings = getFilteredBookings();
   
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+  
   return (
-    <div className={`container mx-auto p-4 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
-      <h1 className="text-2xl font-bold mb-6">Booking Management</h1>
+    <div className="container">
+      <h1 className="page-title">Booking Management</h1>
       
-      {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
+      {error && (
+        <div className="error-alert">
+          <span className="error-message">{error}</span>
+          <button className="close-btn" onClick={() => setError(null)}>×</button>
+        </div>
+      )}
       
-      <div className="mb-6">
-        <div className="flex flex-wrap items-center gap-4">
-          <h2 className="text-lg font-semibold">Filter by Status:</h2>
-          <div className="flex flex-wrap gap-2">
-            <button 
-              onClick={() => setStatusFilter('all')}
-              className={`px-4 py-2 rounded ${statusFilter === 'all' 
-                ? 'bg-blue-600 text-white' 
-                : theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}
-            >
-              All
-            </button>
-            <button 
-              onClick={() => setStatusFilter('PENDING')}
-              className={`px-4 py-2 rounded ${statusFilter === 'PENDING' 
-                ? 'bg-yellow-500 text-white' 
-                : theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}
-            >
-              Pending
-            </button>
-            <button 
-              onClick={() => setStatusFilter('CONFIRMED')}
-              className={`px-4 py-2 rounded ${statusFilter === 'CONFIRMED' 
-                ? 'bg-blue-500 text-white' 
-                : theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}
-            >
-              Confirmed
-            </button>
-            <button 
-              onClick={() => setStatusFilter('IN_PROGRESS')}
-              className={`px-4 py-2 rounded ${statusFilter === 'IN_PROGRESS' 
-                ? 'bg-indigo-500 text-white' 
-                : theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}
-            >
-              In Progress
-            </button>
-            <button 
-              onClick={() => setStatusFilter('COMPLETED')}
-              className={`px-4 py-2 rounded ${statusFilter === 'COMPLETED' 
-                ? 'bg-green-500 text-white' 
-                : theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}
-            >
-              Completed
-            </button>
-            <button 
-              onClick={() => setStatusFilter('CANCELLED')}
-              className={`px-4 py-2 rounded ${statusFilter === 'CANCELLED' 
-                ? 'bg-red-500 text-white' 
-                : theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}
-            >
-              Cancelled
-            </button>
+      <div className="management-card">
+        <div className="card-body">
+          <div className="filter-section">
+            <h2 className="filter-title">Filter by Status:</h2>
+            <div className="filter-buttons">
+              <button 
+                onClick={() => setStatusFilter('all')}
+                className={`filter-btn ${statusFilter === 'all' ? 'filter-btn-active' : 'filter-btn-inactive'}`}
+              >
+                All
+              </button>
+              <button 
+                onClick={() => setStatusFilter('PENDING')}
+                className={`filter-btn ${statusFilter === 'PENDING' ? 'filter-btn-active' : 'filter-btn-inactive'}`}
+              >
+                Pending
+              </button>
+              <button 
+                onClick={() => setStatusFilter('CONFIRMED')}
+                className={`filter-btn ${statusFilter === 'CONFIRMED' ? 'filter-btn-active' : 'filter-btn-inactive'}`}
+              >
+                Confirmed
+              </button>
+              <button 
+                onClick={() => setStatusFilter('IN_PROGRESS')}
+                className={`filter-btn ${statusFilter === 'IN_PROGRESS' ? 'filter-btn-active' : 'filter-btn-inactive'}`}
+              >
+                In Progress
+              </button>
+              <button 
+                onClick={() => setStatusFilter('COMPLETED')}
+                className={`filter-btn ${statusFilter === 'COMPLETED' ? 'filter-btn-active' : 'filter-btn-inactive'}`}
+              >
+                Completed
+              </button>
+              <button 
+                onClick={() => setStatusFilter('CANCELLED')}
+                className={`filter-btn ${statusFilter === 'CANCELLED' ? 'filter-btn-active' : 'filter-btn-inactive'}`}
+              >
+                Cancelled
+              </button>
+            </div>
           </div>
         </div>
       </div>
       
       {filteredBookings.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-lg">No bookings found with the selected filter.</p>
+        <div className="empty-state">
+          <p className="empty-message">No bookings found with the selected filter.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className={`min-w-full ${theme === 'dark' ? 'bg-gray-700' : 'bg-white'} shadow-md rounded-lg overflow-hidden`}>
-            <thead className={theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}>
+        <div className="table-container">
+          <table className="bookings-table">
+            <thead className="table-header">
               <tr>
-                <th className="px-4 py-3 text-left">Booking ID</th>
-                <th className="px-4 py-3 text-left">Service</th>
-                <th className="px-4 py-3 text-left">Scheduled Time</th>
-                <th className="px-4 py-3 text-left">Worker</th>
-                <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Payment</th>
-                <th className="px-4 py-3 text-left">Actions</th>
+                <th>Booking ID</th>
+                <th>Service</th>
+                <th>Scheduled Time</th>
+                <th>Worker</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="table-body">
               {filteredBookings.map((booking) => (
-                <tr 
-                  key={booking.id} 
-                  className={`border-b ${theme === 'dark' ? 'border-gray-600 hover:bg-gray-600' : 'border-gray-200 hover:bg-gray-50'}`}
-                >
-                  <td className="px-4 py-3">{booking.id.slice(0, 8)}...</td>
-                  <td className="px-4 py-3">{booking.service_type}</td>
-                  <td className="px-4 py-3">
+                <tr key={booking.id} className="table-row">
+                  <td className="truncated-id">{booking.id.slice(0, 8)}...</td>
+                  <td>{booking.service_type}</td>
+                  <td>
                     {new Date(booking.scheduled_time).toLocaleString()}
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     {booking.worker_id ? (
                       workers.find(w => w.id === booking.worker_id)?.name || 'Assigned'
                     ) : (
-                      <span className="text-yellow-500">Unassigned</span>
+                      <span className="worker-unassigned">Unassigned</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
-                    <BookingStatusBadge status={booking.status} />
+                  <td>
+                    <span className={`status-badge status-${booking.status.toLowerCase()}`}>
+                      {booking.status.replace('_', ' ')}
+                    </span>
                   </td>
-                  <td className="px-4 py-3">
-                    <span className={
-                      booking.payment_status === 'PAID' ? 'text-green-500' :
-                      booking.payment_status === 'PENDING' ? 'text-yellow-500' :
-                      booking.payment_status === 'REFUNDED' ? 'text-blue-500' : 'text-red-500'
-                    }>
+                  <td>
+                    <span className={`payment-${booking.payment_status.toLowerCase()}`}>
                       {booking.payment_status}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex space-x-2">
+                  <td>
+                    <div className="action-buttons">
                       <button
                         onClick={() => openDetailsModal(booking)}
-                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        className="btn btn-blue"
                       >
                         Details
                       </button>
@@ -248,7 +244,7 @@ const BookingManagementPage = () => {
                       {booking.status === 'PENDING' && (
                         <button
                           onClick={() => openAssignModal(booking)}
-                          className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                          className="btn btn-green"
                         >
                           Assign
                         </button>
@@ -257,7 +253,7 @@ const BookingManagementPage = () => {
                       {booking.status === 'CONFIRMED' && (
                         <button
                           onClick={() => handleStatusChange(booking.id, 'IN_PROGRESS')}
-                          className="px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600"
+                          className="btn btn-purple"
                         >
                           Start
                         </button>
@@ -266,7 +262,7 @@ const BookingManagementPage = () => {
                       {booking.status === 'IN_PROGRESS' && (
                         <button
                           onClick={() => handleStatusChange(booking.id, 'COMPLETED')}
-                          className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                          className="btn btn-green"
                         >
                           Complete
                         </button>
@@ -275,7 +271,7 @@ const BookingManagementPage = () => {
                       {['PENDING', 'CONFIRMED'].includes(booking.status) && (
                         <button
                           onClick={() => handleStatusChange(booking.id, 'CANCELLED')}
-                          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                          className="btn btn-red"
                         >
                           Cancel
                         </button>
@@ -291,23 +287,25 @@ const BookingManagementPage = () => {
       
       {selectedBooking && (
         <>
-          <BookingDetailsModal
-            booking={selectedBooking}
-            isOpen={isDetailsModalOpen}
-            onClose={() => setIsDetailsModalOpen(false)}
-            workers={workers}
-            onStatusChange={handleStatusChange}
-            theme={theme}
-          />
+          {isDetailsModalOpen && (
+            <BookingDetailsModal
+              booking={selectedBooking}
+              isOpen={isDetailsModalOpen}
+              onClose={() => setIsDetailsModalOpen(false)}
+              workers={workers}
+              onStatusChange={handleStatusChange}
+            />
+          )}
           
-          <AssignWorkerModal
-            booking={selectedBooking}
-            workers={workers}
-            isOpen={isAssignModalOpen}
-            onClose={() => setIsAssignModalOpen(false)}
-            onAssign={handleAssignWorker}
-            theme={theme}
-          />
+          {isAssignModalOpen && (
+            <AssignWorkerModal
+              booking={selectedBooking}
+              workers={workers}
+              isOpen={isAssignModalOpen}
+              onClose={() => setIsAssignModalOpen(false)}
+              onAssign={handleAssignWorker}
+            />
+          )}
         </>
       )}
     </div>

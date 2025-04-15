@@ -43,48 +43,58 @@ const LoginPage = () => {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-logo">
-          <FaCar className="auth-logo-icon" />
+          <div className="auth-logo-icon">
+            <FaCar />
+          </div>
           <h1>VehicleRepair</h1>
         </div>
+
         <div className="auth-card">
           <div className="auth-header">
             <h2>Welcome Back</h2>
             <p>Enter your credentials to sign in to your account</p>
           </div>
+
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <div className="input-with-icon">
-                <FaEnvelope className="input-icon" />
+                <span className="input-icon">
+                  <FaEnvelope />
+                </span>
                 <input
-                  id="email"
                   type="email"
-                  placeholder="name@example.com"
+                  id="email"
+                  placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
             </div>
+
             <div className="form-group">
               <div className="label-with-link">
                 <label htmlFor="password">Password</label>
-                <Link to="/auth/forgot-password" className="forgot-password">
+                <Link to="/forgot-password" className="forgot-password">
                   Forgot password?
                 </Link>
               </div>
               <div className="input-with-icon">
-                <FaLock className="input-icon" />
+                <span className="input-icon">
+                  <FaLock />
+                </span>
                 <input
-                  id="password"
                   type="password"
-                  placeholder="••••••••"
+                  id="password"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
             </div>
+
             <button type="submit" className="auth-button" disabled={isLoading}>
               {isLoading ? (
                 <>
@@ -96,6 +106,7 @@ const LoginPage = () => {
               )}
             </button>
           </form>
+
           <div className="auth-footer">
             <p>
               Don't have an account?{" "}

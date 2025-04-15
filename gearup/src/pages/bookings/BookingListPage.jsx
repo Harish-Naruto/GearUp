@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import './BookingListPage.css';
 
 const BookingListPage = () => {
   const [bookings, setBookings] = useState([]);
@@ -57,47 +58,47 @@ const BookingListPage = () => {
 
   const getStatusBadgeClass = (status) => {
     switch (status) {
-      case 'PENDING': return 'bg-yellow-100 text-yellow-800';
-      case 'CONFIRMED': return 'bg-blue-100 text-blue-800';
-      case 'IN_PROGRESS': return 'bg-purple-100 text-purple-800';
-      case 'COMPLETED': return 'bg-green-100 text-green-800';
-      case 'CANCELLED': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'PENDING': return 'status-badge status-pending';
+      case 'CONFIRMED': return 'status-badge status-confirmed';
+      case 'IN_PROGRESS': return 'status-badge status-in-progress';
+      case 'COMPLETED': return 'status-badge status-completed';
+      case 'CANCELLED': return 'status-badge status-cancelled';
+      default: return 'status-badge';
     }
   };
 
   const getPaymentStatusBadgeClass = (status) => {
     switch (status) {
-      case 'PAID': return 'bg-green-100 text-green-800';
-      case 'PENDING': return 'bg-yellow-100 text-yellow-800';
-      case 'REFUNDED': return 'bg-blue-100 text-blue-800';
-      case 'FAILED': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'PAID': return 'status-badge payment-paid';
+      case 'PENDING': return 'status-badge payment-pending';
+      case 'REFUNDED': return 'status-badge payment-refunded';
+      case 'FAILED': return 'status-badge payment-failed';
+      default: return 'status-badge';
     }
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">My Bookings</h1>
+    <div className="container">
+      <div className="header-container">
+        <h1 className="page-title">My Bookings</h1>
         <Link 
-          to="/bookings/create" 
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          to="/bookings/new" 
+          className="create-booking-btn"
         >
           Book Service
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-4">Filters</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="filters-container">
+        <h2 className="filters-title">Filters</h2>
+        <div className="filters-grid">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label className="filter-label">Status</label>
             <select
               name="status"
               value={filters.status}
               onChange={handleFilterChange}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="filter-select"
             >
               <option value="">All Statuses</option>
               <option value="PENDING">Pending</option>
@@ -109,12 +110,12 @@ const BookingListPage = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
+            <label className="filter-label">Payment Status</label>
             <select
               name="payment_status"
               value={filters.payment_status}
               onChange={handleFilterChange}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="filter-select"
             >
               <option value="">All Payment Statuses</option>
               <option value="PENDING">Pending</option>
@@ -125,11 +126,11 @@ const BookingListPage = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+            <label className="filter-label">Sort By</label>
             <select
               value={sort}
               onChange={handleSortChange}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="filter-select"
             >
               <option value="scheduled_time">Scheduled Time (Asc)</option>
               <option value="-scheduled_time">Scheduled Time (Desc)</option>
@@ -141,53 +142,53 @@ const BookingListPage = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center my-10">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="loading-container">
+          <div className="spinner"></div>
         </div>
       ) : bookings.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-10 text-center">
-          <p className="text-gray-500">No bookings found. Create a new booking to get started.</p>
+        <div className="empty-state">
+          <p className="empty-state-text">No bookings found. Create a new booking to get started.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow">
+        <div className="table-container">
+          <table className="bookings-table">
             <thead>
-              <tr className="bg-gray-100 text-gray-700">
-                <th className="py-3 px-4 text-left">Service</th>
-                <th className="py-3 px-4 text-left">Garage</th>
-                <th className="py-3 px-4 text-left">Scheduled Time</th>
-                <th className="py-3 px-4 text-left">Status</th>
-                <th className="py-3 px-4 text-left">Payment</th>
-                <th className="py-3 px-4 text-left">Actions</th>
+              <tr className="table-header">
+                <th className="table-header-cell">Service</th>
+                <th className="table-header-cell">Garage</th>
+                <th className="table-header-cell">Scheduled Time</th>
+                <th className="table-header-cell">Status</th>
+                <th className="table-header-cell">Payment</th>
+                <th className="table-header-cell">Actions</th>
               </tr>
             </thead>
             <tbody>
               {bookings.map((booking) => (
-                <tr key={booking.id} className="border-t hover:bg-gray-50">
-                  <td className="py-3 px-4">{booking.service_type}</td>
-                  <td className="py-3 px-4">{booking.garages?.name || 'N/A'}</td>
-                  <td className="py-3 px-4">{formatDate(booking.scheduled_time)}</td>
-                  <td className="py-3 px-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${getStatusBadgeClass(booking.status)}`}>
+                <tr key={booking.id} className="table-row">
+                  <td className="table-cell">{booking.service_type}</td>
+                  <td className="table-cell">{booking.garages?.name || 'N/A'}</td>
+                  <td className="table-cell">{formatDate(booking.scheduled_time)}</td>
+                  <td className="table-cell">
+                    <span className={getStatusBadgeClass(booking.status)}>
                       {booking.status}
                     </span>
                   </td>
-                  <td className="py-3 px-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${getPaymentStatusBadgeClass(booking.payment_status)}`}>
+                  <td className="table-cell">
+                    <span className={getPaymentStatusBadgeClass(booking.payment_status)}>
                       {booking.payment_status}
                     </span>
                   </td>
-                  <td className="py-3 px-4">
+                  <td className="table-cell">
                     <Link 
                       to={`/bookings/${booking.id}`}
-                      className="text-blue-500 hover:underline mr-3"
+                      className="action-link view-link"
                     >
                       View
                     </Link>
                     {booking.status === 'PENDING' && (
                       <Link 
                         to={`/bookings/${booking.id}/edit`}
-                        className="text-green-500 hover:underline mr-3"
+                        className="action-link edit-link"
                       >
                         Edit
                       </Link>
@@ -199,7 +200,7 @@ const BookingListPage = () => {
                             // Handle cancel logic
                           }
                         }}
-                        className="text-red-500 hover:underline"
+                        className="cancel-button"
                       >
                         Cancel
                       </button>

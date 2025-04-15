@@ -3,6 +3,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { ThemeContext } from '../../contexts/ThemeContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import './ServiceManagement.css';
 
 const ServiceManagementPage = () => {
   const { user, token } = useContext(AuthContext);
@@ -93,17 +94,27 @@ const ServiceManagementPage = () => {
         duration: parseInt(formData.duration)
       };
       
-      const response = await axios.post(`http://localhost:3000/api/v1/garages/${garage.id}/services`, payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      // Fix: Make sure we're using the correct endpoint and payload format
+      const response = await axios.post(`http://localhost:3000/api/v1/garages/${garage.id}/services`, 
+        { service: payload }, // Ensure the service data is nested under a "service" key if required by API
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
       
-      setServices(response.data.data.garage.services || []);
+      // Fix: Make sure we're correctly accessing the updated services from the response
+      const updatedServices = response.data.data?.garage?.services || 
+                             response.data.data?.services || 
+                             response.data?.services || 
+                             [];
+      
+      setServices(updatedServices);
       toast.success('Service added successfully');
       resetForm();
       setIsAddModalOpen(false);
     } catch (error) {
       console.error('Error adding service:', error);
-      toast.error('Failed to add service');
+      toast.error(error.response?.data?.message || 'Failed to add service');
     }
   };
 
@@ -113,34 +124,69 @@ const ServiceManagementPage = () => {
     if (!validateForm() || !currentService) return;
     
     try {
-      // Since backend doesn't have a direct endpoint to update a single service,
-      // we need to update all services
+      const updatedService = {
+        id: currentService.id,
+        name: formData.name,
+        description: formData.description || '',
+        price: parseFloat(formData.price),
+        duration: parseInt(formData.duration)
+      };
+      
+      // Option 1: If the API supports updating a single service directly
+      const response = await axios.put(
+        `http://localhost:3000/api/v1/garages/${garage.id}/services/${currentService.id}`,
+        { service: updatedService },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      // Update local state based on response
       const updatedServices = services.map(service => {
         if (service.id === currentService.id) {
-          return {
-            ...service,
-            name: formData.name,
-            description: formData.description || '',
-            price: parseFloat(formData.price),
-            duration: parseInt(formData.duration)
-          };
+          return updatedService;
         }
         return service;
       });
       
-      const response = await axios.put(`http://localhost:3000/api/v1/garages/${garage.id}`, {
-        services: updatedServices
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      setServices(response.data.data.garage.services || []);
+      setServices(updatedServices);
       toast.success('Service updated successfully');
       resetForm();
       setIsEditModalOpen(false);
     } catch (error) {
       console.error('Error updating service:', error);
-      toast.error('Failed to update service');
+      
+      // Fallback to update all services if the direct update fails
+      try {
+        const updatedServices = services.map(service => {
+          if (service.id === currentService.id) {
+            return {
+              ...service,
+              name: formData.name,
+              description: formData.description || '',
+              price: parseFloat(formData.price),
+              duration: parseInt(formData.duration)
+            };
+          }
+          return service;
+        });
+        
+        const response = await axios.put(
+          `http://localhost:3000/api/v1/garages/${garage.id}`,
+          { garage: { services: updatedServices } },
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+        
+        setServices(updatedServices);
+        toast.success('Service updated successfully');
+        resetForm();
+        setIsEditModalOpen(false);
+      } catch (fallbackError) {
+        console.error('Error in fallback update:', fallbackError);
+        toast.error('Failed to update service');
+      }
     }
   };
 
@@ -158,6 +204,22 @@ const ServiceManagementPage = () => {
     } catch (error) {
       console.error('Error removing service:', error);
       toast.error('Failed to remove service');
+      
+      // Fallback: If direct delete doesn't work, try updating the garage without this service
+      try {
+        const updatedServices = services.filter(service => service.id !== serviceId);
+        await axios.put(
+          `http://localhost:3000/api/v1/garages/${garage.id}`,
+          { garage: { services: updatedServices } },
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+        setServices(updatedServices);
+        toast.success('Service removed successfully');
+      } catch (fallbackError) {
+        console.error('Error in fallback remove:', fallbackError);
+      }
     }
   };
 
@@ -184,128 +246,117 @@ const ServiceManagementPage = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   if (!garage) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <h2 className="text-xl font-bold mb-4">No garage found</h2>
-        <p>You are not currently managing any garage.</p>
+      <div className="error-container">
+        <h2 className="card-title">No garage found</h2>
+        <p className="error-message">You are not currently managing any garage.</p>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen p-6 ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'}`}>
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Service Management - {garage.name}</h1>
+    <div className="container">
+      <div className="page-header">
+        <div className="card-header-content">
+          <h1 className="page-title">Service Management - {garage.name}</h1>
           <button
             onClick={() => {
               resetForm();
               setIsAddModalOpen(true);
             }}
-            className={`px-4 py-2 rounded ${
-              theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'
-            } text-white font-medium`}
+            className="btn btn-primary"
           >
             Add New Service
           </button>
         </div>
-
-        {services.length === 0 ? (
-          <div className={`p-6 rounded-lg mb-6 text-center ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-white shadow'
-          }`}>
-            <p>No services added yet. Add your first service to get started!</p>
-          </div>
-        ) : (
-          <div className={`overflow-x-auto rounded-lg ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-white shadow'
-          }`}>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className={theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'}>
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Service Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Description</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Duration (min)</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className={`divide-y ${theme === 'dark' ? 'divide-gray-700' : 'divide-gray-200'}`}>
-                {services.map((service) => (
-                  <tr key={service.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">{service.name}</td>
-                    <td className="px-6 py-4">{service.description || 'N/A'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">${service.price.toFixed(2)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{service.duration}</td>
-                    <td className="px-6 py-4 text-right whitespace-nowrap">
-                      <button
-                        onClick={() => openEditModal(service)}
-                        className={`mr-2 px-3 py-1 rounded ${
-                          theme === 'dark' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-yellow-500 hover:bg-yellow-600'
-                        } text-white text-sm`}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleRemoveService(service.id)}
-                        className={`px-3 py-1 rounded ${
-                          theme === 'dark' ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600'
-                        } text-white text-sm`}
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
+
+      {services.length === 0 ? (
+        <div className="empty-state">
+          <p>No services added yet. Add your first service to get started!</p>
+        </div>
+      ) : (
+        <div className="table-container">
+          <table className="service-table">
+            <thead className="table-header">
+              <tr>
+                <th>Service Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Duration (min)</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody className="table-body">
+              {services.map((service) => (
+                <tr key={service.id}>
+                  <td>{service.name}</td>
+                  <td>{service.description || 'N/A'}</td>
+                  <td>${service.price.toFixed(2)}</td>
+                  <td>{service.duration}</td>
+                  <td style={{ textAlign: 'right' }}>
+                    <button
+                      onClick={() => openEditModal(service)}
+                      className="btn btn-warning btn-sm"
+                      style={{ marginRight: '0.5rem' }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleRemoveService(service.id)}
+                      className="btn btn-danger btn-sm"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Add Service Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className={`max-w-md w-full p-6 rounded-lg ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
-            <h2 className="text-xl font-bold mb-4">Add New Service</h2>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h2 className="modal-title">Add New Service</h2>
+            </div>
             <form onSubmit={handleAddService}>
-              <div className="mb-4">
-                <label className="block mb-1 font-medium">Service Name*</label>
+              <div className="form-group">
+                <label className="form-label">Service Name*</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full p-2 border rounded ${
-                    theme === 'dark' 
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300'
-                  } ${errors.name ? 'border-red-500' : ''}`}
+                  className={`form-control ${errors.name ? 'border-red-500' : ''}`}
                 />
-                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                {errors.name && <p className="form-error">{errors.name}</p>}
               </div>
               
-              <div className="mb-4">
-                <label className="block mb-1 font-medium">Description</label>
+              <div className="form-group">
+                <label className="form-label">Description</label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   rows="3"
-                  className={`w-full p-2 border rounded ${
-                    theme === 'dark' 
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300'
-                  }`}
+                  className="form-control"
                 />
               </div>
               
-              <div className="mb-4">
-                <label className="block mb-1 font-medium">Price ($)*</label>
+              <div className="form-group">
+                <label className="form-label">Price ($)*</label>
                 <input
                   type="number"
                   name="price"
@@ -313,47 +364,35 @@ const ServiceManagementPage = () => {
                   onChange={handleInputChange}
                   step="0.01"
                   min="0"
-                  className={`w-full p-2 border rounded ${
-                    theme === 'dark' 
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300'
-                  } ${errors.price ? 'border-red-500' : ''}`}
+                  className={`form-control ${errors.price ? 'border-red-500' : ''}`}
                 />
-                {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price}</p>}
+                {errors.price && <p className="form-error">{errors.price}</p>}
               </div>
               
-              <div className="mb-6">
-                <label className="block mb-1 font-medium">Duration (minutes)*</label>
+              <div className="form-group">
+                <label className="form-label">Duration (minutes)*</label>
                 <input
                   type="number"
                   name="duration"
                   value={formData.duration}
                   onChange={handleInputChange}
                   min="1"
-                  className={`w-full p-2 border rounded ${
-                    theme === 'dark' 
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300'
-                  } ${errors.duration ? 'border-red-500' : ''}`}
+                  className={`form-control ${errors.duration ? 'border-red-500' : ''}`}
                 />
-                {errors.duration && <p className="text-red-500 text-sm mt-1">{errors.duration}</p>}
+                {errors.duration && <p className="form-error">{errors.duration}</p>}
               </div>
               
-              <div className="flex justify-end space-x-3">
+              <div className="modal-footer">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className={`px-4 py-2 rounded ${
-                    theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
-                  }`}
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className={`px-4 py-2 rounded ${
-                    theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'
-                  } text-white`}
+                  className="btn btn-primary"
                 >
                   Add Service
                 </button>
@@ -365,43 +404,37 @@ const ServiceManagementPage = () => {
 
       {/* Edit Service Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className={`max-w-md w-full p-6 rounded-lg ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
-            <h2 className="text-xl font-bold mb-4">Edit Service</h2>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h2 className="modal-title">Edit Service</h2>
+            </div>
             <form onSubmit={handleUpdateService}>
-              <div className="mb-4">
-                <label className="block mb-1 font-medium">Service Name*</label>
+              <div className="form-group">
+                <label className="form-label">Service Name*</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full p-2 border rounded ${
-                    theme === 'dark' 
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300'
-                  } ${errors.name ? 'border-red-500' : ''}`}
+                  className={`form-control ${errors.name ? 'border-red-500' : ''}`}
                 />
-                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                {errors.name && <p className="form-error">{errors.name}</p>}
               </div>
               
-              <div className="mb-4">
-                <label className="block mb-1 font-medium">Description</label>
+              <div className="form-group">
+                <label className="form-label">Description</label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   rows="3"
-                  className={`w-full p-2 border rounded ${
-                    theme === 'dark' 
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300'
-                  }`}
+                  className="form-control"
                 />
               </div>
               
-              <div className="mb-4">
-                <label className="block mb-1 font-medium">Price ($)*</label>
+              <div className="form-group">
+                <label className="form-label">Price ($)*</label>
                 <input
                   type="number"
                   name="price"
@@ -409,47 +442,35 @@ const ServiceManagementPage = () => {
                   onChange={handleInputChange}
                   step="0.01"
                   min="0"
-                  className={`w-full p-2 border rounded ${
-                    theme === 'dark' 
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300'
-                  } ${errors.price ? 'border-red-500' : ''}`}
+                  className={`form-control ${errors.price ? 'border-red-500' : ''}`}
                 />
-                {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price}</p>}
+                {errors.price && <p className="form-error">{errors.price}</p>}
               </div>
               
-              <div className="mb-6">
-                <label className="block mb-1 font-medium">Duration (minutes)*</label>
+              <div className="form-group">
+                <label className="form-label">Duration (minutes)*</label>
                 <input
                   type="number"
                   name="duration"
                   value={formData.duration}
                   onChange={handleInputChange}
                   min="1"
-                  className={`w-full p-2 border rounded ${
-                    theme === 'dark' 
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'bg-white border-gray-300'
-                  } ${errors.duration ? 'border-red-500' : ''}`}
+                  className={`form-control ${errors.duration ? 'border-red-500' : ''}`}
                 />
-                {errors.duration && <p className="text-red-500 text-sm mt-1">{errors.duration}</p>}
+                {errors.duration && <p className="form-error">{errors.duration}</p>}
               </div>
               
-              <div className="flex justify-end space-x-3">
+              <div className="modal-footer">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className={`px-4 py-2 rounded ${
-                    theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
-                  }`}
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className={`px-4 py-2 rounded ${
-                    theme === 'dark' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-yellow-500 hover:bg-yellow-600'
-                  } text-white`}
+                  className="btn btn-warning"
                 >
                   Update Service
                 </button>
