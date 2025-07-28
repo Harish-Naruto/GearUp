@@ -1,12 +1,65 @@
-# React + Vite
+# GearUp — Vehicle Service Management Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GearUp is a full-stack web application designed to digitize and streamline vehicle repair services. The platform connects vehicle owners with garages, allowing seamless booking, management, and execution of repair orders.
 
-Currently, two official plugins are available:
+## User Roles & Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Customer
+- Browse and search for garages offering various repair services.
+- Book vehicle repair orders online with detailed service descriptions.
+- Track the status of ongoing repair orders in real-time.
+- Manage user profile and view order history.
 
-## Expanding the ESLint configuration
+### Garage Manager
+- Register and manage their garage/shop details and service offerings.
+- Receive and manage incoming vehicle repair orders.
+- Assign jobs to workers and oversee workflow progress.
+- Get real-time notifications of new bookings and order updates.
+- Manage garage profile and operational hours.
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Worker
+- View assigned repair tasks and accept or reject jobs.
+- Update job status and progress in real-time.
+- Communicate with garage managers and customers if needed.
+- Track completed jobs and performance metrics.
+
+## Key Features
+- Real-time booking and notification system using WebSockets.
+- Role-based access control for customers, garage managers, and workers.
+- Comprehensive dashboards tailored to each user role.
+- Secure authentication and authorization using JWT and/or Supabase Auth.
+- Containerized deployment with Docker for easy setup and scaling.
+
+## Tech Stack
+
+- **Frontend**: React, Tailwind CSS
+- **Backend**: Node.js, Express.js
+- **Database**: PostgreSQL (via Supabase)
+- **Real-time**: WebSocket or Redis Pub/Sub for notifications and messaging
+- **Storage**: MinIO or AWS S3-compatible storage for documents and images
+- **Deployment**: Docker & Docker Compose
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v18+)
+- npm or yarn
+- Docker & Docker Compose (optional)
+- Supabase account and project for backend services
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/Harish-Naruto/GearUp.git
+cd GearUp
+```
+2. Install dependencies:
+   ```bash
+   npm install && cd ./server && npm install
+   ```
+3. Start the backend and frontend servers:
+   ```bash
+   npm run dev
+   ```  
